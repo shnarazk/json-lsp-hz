@@ -15,7 +15,7 @@
                   name = "json-lsp-hz-${version}";
                   pname = "json-lsp-hz";
                   src = self;
-                  cargoHash = "sha256-pAe+UJjNMyCGn2vkZo2+jxLsuzmASMoFAUB/FE7oJjM=";
+                  cargoHash = "sha256-uPB9HcIyj0Yy0i0riXLF7SVZ7DX7QoaIa1S3qPkX9ps=";
                   buildInputs = rustc.buildInputs ++ lib.optional stdenv.isDarwin [ libiconv ];
                   buildPhase = "cargo build --release";
                   installPhase = ''
