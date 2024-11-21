@@ -2,6 +2,7 @@
 name = "json-lsp"
 version = "0.1.0"
 edition = "2021"
+author = "shnarazk@github.com"
 
 [dependencies]
 lsp-types = "^0.94"

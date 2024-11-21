@@ -1,24 +1,34 @@
 #![allow(unused_imports)]
-use tokio::*;
-use tower_lsp::lsp_types::*;
-use tower_lsp::{Client, LanguageServer, LspService};
+#![allow(unused_variables)]
+use tower_lsp::{jsonrpc::Result, lsp_types::*, Client, LanguageServer, LspService, Server};
 
 #[derive(Debug)]
 struct JsonServer {
     client: Client,
 }
 
-// #[async_trait]
+#[tower_lsp::async_trait]
 impl LanguageServer for JsonServer {
-    fn initialize(&self, _params: InitializeParams) -> Result<InitializeResult> {
-        Ok(InitializeResult::default())
+    async fn initialize(&self, _params: InitializeParams) -> Result<InitializeResult> {
+        Ok(InitializeResult {
+            server_info: None,
+            capabilities: ServerCapabilities {
+                inlay_hint_provider: None,
+                text_document_sync: None,
+                ..Default::default()
+            },
+        })
     }
 
-    fn shutdown(&self) -> Result<()> {
+    async fn shutdown(&self) -> Result<()> {
         Ok(())
     }
 
-    fn initialized(&self, _params: InitializedParams) {}
+    async fn initialized(&self, _params: InitializedParams) {
+        self.client
+            .log_message(MessageType::INFO, "server initialized")
+            .await;
+    }
 
     /* fn text_document_did_open(&self, params: DidOpenTextDocumentParams) {
         self.client
@@ -34,19 +44,10 @@ impl LanguageServer for JsonServer {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    use io::stdin;
-    use io::stdout;
+async fn main() {
+    let stdin = tokio::io::stdin();
+    let stdout = tokio::io::stdout();
 
-    async fn serve_lsp_service() -> Result<(), Box<dyn std::error::Error>> {
-        let stdin = stdin();
-        let stdout = stdout();
-
-        let (mut service, mut sock) = LspService::new(|client| JsonServer { client });
-        service.run(sock).await?;
-
-        Ok(())
-    }
-
-    tokio::runtime::Runtime::new()?.block_on(serve_lsp_service())
+    let (service, sock) = LspService::new(|client| JsonServer { client });
+    Server::new(stdin, stdout, sock).serve(service).await;
 }
