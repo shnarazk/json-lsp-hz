@@ -47,7 +47,7 @@
                   packages = [
                     pkgs.bashInteractive
                     pkgs.cargo-watch
-                    pkgs.lldb_20
+                    pkgs.lldb_19
                     pkgs.libiconv
                     pkgs.samply
                     pkgs.tokei
