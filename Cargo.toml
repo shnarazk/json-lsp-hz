@@ -1,5 +1,5 @@
 [package]
-name = "json-lsp"
+name = "json-lsp-hz"
 version = "0.1.0"
 edition = "2021"
 author = "shnarazk@github.com"
