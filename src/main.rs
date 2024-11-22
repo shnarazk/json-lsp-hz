@@ -1,6 +1,12 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
-use tower_lsp::{jsonrpc::Result, lsp_types::*, Client, LanguageServer, LspService, Server};
+use {
+    dashmap::DashMap,
+    ropey::Rope,
+    serde::{Deserialize, Serialize},
+    serde_json::Value,
+    tower_lsp::{jsonrpc::Result, lsp_types::*, Client, LanguageServer, LspService, Server},
+};
 
 #[derive(Debug)]
 struct JsonServer {
@@ -29,16 +35,22 @@ impl LanguageServer for JsonServer {
             .log_message(MessageType::INFO, "server initialized")
             .await;
     }
-
-    /* fn text_document_did_open(&self, params: DidOpenTextDocumentParams) {
-        self.client
-            .log_message(Message {
-                message: format!("Text document {} open", params.text_document.uri),
-                ty: MessageType::Info,
-            })
-            .unwrap();
+    async fn completion(&self, _: CompletionParams) -> Result<Option<CompletionResponse>> {
+        Ok(Some(CompletionResponse::Array(vec![
+            CompletionItem::new_simple("Hello".to_string(), "Some detail".to_string()),
+            CompletionItem::new_simple("Bye".to_string(), "More detail".to_string()),
+        ])))
     }
-    */
+
+    async fn did_open(&self, params: DidOpenTextDocumentParams) {
+        dbg!("file opened");
+        /* self.client.log_message(Message {
+            message: format!("Text document {} open", params.text_document.uri),
+            ty: MessageType::Info,
+            language_id: ???
+        });
+        */
+    }
 
     // Implement other required methods here...
 }
@@ -51,3 +63,4 @@ async fn main() {
     let (service, sock) = LspService::new(|client| JsonServer { client });
     Server::new(stdin, stdout, sock).serve(service).await;
 }
+impl JsonServer {}
