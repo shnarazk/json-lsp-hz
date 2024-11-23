@@ -7,4 +7,4 @@ providing utilities and tools to simplify the process.
 ## References
 
 - [tower-lsp documentation](https://docs.rs/tower-lsp/latest/tower_lsp/)
-- [tower-lsp-boilerplate](https://github.com/IWANABETHATGUY/tower-lsp-boilerplate)
+- ~~[tower-lsp-boilerplate](https://github.com/IWANABETHATGUY/tower-lsp-boilerplate)~~ too old
