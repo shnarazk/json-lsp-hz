@@ -5,6 +5,7 @@ use {
     ropey::Rope,
     serde::{Deserialize, Serialize},
     serde_json::Value,
+    std::net::ToSocketAddrs,
     tower_lsp::{jsonrpc::Result, lsp_types::*, Client, LanguageServer, LspService, Server},
 };
 
@@ -19,8 +20,10 @@ impl LanguageServer for JsonServer {
         Ok(InitializeResult {
             server_info: None,
             capabilities: ServerCapabilities {
-                inlay_hint_provider: None,
-                text_document_sync: None,
+                completion_provider: Some(CompletionOptions::default()),
+                hover_provider: Some(HoverProviderCapability::Simple(true)),
+                // inlay_hint_provider: None,
+                // text_document_sync: None,
                 ..Default::default()
             },
         })
@@ -42,6 +45,13 @@ impl LanguageServer for JsonServer {
         ])))
     }
 
+    async fn hover(&self, _: HoverParams) -> Result<Option<Hover>> {
+        Ok(Some(Hover {
+            contents: HoverContents::Scalar(MarkedString::String("You're hovering".to_string())),
+            range: None,
+        }))
+    }
+
     async fn did_open(&self, params: DidOpenTextDocumentParams) {
         dbg!("file opened");
         /* self.client.log_message(Message {
@@ -55,6 +65,7 @@ impl LanguageServer for JsonServer {
     // Implement other required methods here...
 }
 
+/// this is the entry point
 #[tokio::main]
 async fn main() {
     let stdin = tokio::io::stdin();
