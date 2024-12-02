@@ -5,7 +5,7 @@ edition = "2021"
 author = "shnarazk@github.com"
 
 [dependencies]
-dashmap = "5.5"
+dashmap = "6.1"
 lsp-types = "^0.97"
 ropey = "1.6"
 serde = { version = "1.0", features = ["derive"] }
